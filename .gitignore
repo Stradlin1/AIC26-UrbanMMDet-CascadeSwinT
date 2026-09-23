@@ -1,0 +1,125 @@
+# ==============================================================================
+# AIC2026 多模态检测实验仓库 .gitignore
+# 跟踪原则：只纳入「代码 + 配置 + 文档 + 小体积可读清单/标注」，
+#           忽略「数据集镜像、模型权重、训练产物、可再生成的中间文件」。
+# ==============================================================================
+
+# ------------------------------------------------------------------ 数据集 (≈18G)
+# 三个模态的原始图片体积过大，不入库；labels/ 标注同样不入库。
+datasets/
+
+# -------------------------------------------------------------- 预训练权重 (≈754M)
+pretrained/
+
+# ------------------------------------------------------------ 训练/推理产物 (≈3.4G)
+# 含 *.pth、last_checkpoint、resolved_config.py、gate_history.jsonl、submission_phase1 等
+runs/
+
+# ------------------------------------------------------------- 可再生成的中间产物
+# generated/aic2026_coco/instances_*.json 可由 scripts/ 中的转换脚本重新生成
+generated/
+outputs/
+workspace/
+work_dirs/
+
+# ------------------------------------------------------------------ 第三方上游代码
+# mmcv/ 与 mmdetection/ 需要入库（含 mmcv 的算子改动、mmdetection/configs/aic2026/ 等），
+# 因此不在此忽略。注意两点：
+#   1) 这两个目录内各自残留 .git，git 会把它们当成嵌套仓库、只记录一个 commit 指针，
+#      实际代码不会被提交。要让文件真正入库，需先执行：
+#        rm -rf mmcv/.git mmdetection/.git
+#      （删除后不影响磁盘上的源码；日后需要同步上游可另外 clone 一份。）
+#   2) 目录内自带的上游 .gitignore 优先级高于本文件，其中的
+#      data/、src/、work_dirs/、*.so、__pycache__ 等规则仍会生效。
+
+# ------------------------------------------------------ 模型权重 / 压缩包（兜底）
+# 权重与压缩包一律不入库；若确实需要放行个别小文件，用 !路径，例如：!yolo_solution/splits.zip
+# 注意：这里不写 *.npy / *.bin / *.pkl / *.npz，因为 mmcv 与 mmdetection 的
+#       tests/data/ 下有这类测试样本，写了会把上游文件一起挡掉。
+*.pth
+*.pt
+*.ckpt
+*.safetensors
+*.onnx
+*.engine
+*.weights
+*.h5
+*.pb
+*.tflite
+*.so
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.7z
+*.rar
+*.xz
+*.gz
+
+# ------------------------------------------------------------------- Python 环境
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+develop-eggs/
+sdist/
+wheels/
+.venv/
+venv/
+env/
+ENV/
+.python-version
+pip-wheel-metadata/
+pip-log.txt
+
+# ------------------------------------------------------------------- 测试/检查缓存
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.cache/
+.tox/
+.nox/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+
+# ------------------------------------------------------------------- 日志与实验记录
+*.log
+logs/
+wandb/
+mlruns/
+lightning_logs/
+events.out.tfevents.*
+gate_history.jsonl
+
+# ------------------------------------------------------------------- 临时文件
+tmp/
+temp/
+*.tmp
+*.bak
+*.orig
+*.rej
+
+# ------------------------------------------------------------------- Jupyter
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
+profile_default/
+ipython_config.py
+
+# ------------------------------------------------------------------- 编辑器 / 系统
+.vscode/*
+!.vscode/settings.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
